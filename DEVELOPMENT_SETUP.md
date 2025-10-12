@@ -79,7 +79,67 @@ sudo mv composer.phar /usr/local/bin/composer
 composer --version
 ```
 
-### 3. Flutter SDK
+### 3. Node.js & nvm (Node Version Manager)
+
+**⚠️ IMPORTANT:** This project requires **Node.js 18.x** for Vite to work properly.
+
+#### Install nvm
+
+```bash
+# macOS/Linux
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+# Or using Homebrew
+brew install nvm
+
+# Add to your shell profile (~/.zshrc or ~/.bash_profile)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Reload shell
+source ~/.zshrc  # or source ~/.bash_profile
+
+# Verify installation
+nvm --version
+```
+
+#### Install Node 18
+
+```bash
+# Install Node 18 LTS (Hydrogen)
+nvm install 18.20.8
+
+# Use Node 18 for this project
+nvm use 18.20.8
+
+# Verify versions
+node --version  # Should show v18.20.8
+npm --version   # Should show 10.x
+
+# (Optional) Set Node 18 as default for all projects
+nvm alias default 18.20.8
+```
+
+#### Project-Specific Node Version
+
+```bash
+# Always use Node 18 when working on the main/ directory
+cd /Applications/XAMPP/xamppfiles/htdocs/renturo/main
+nvm use 18.20.8
+
+# Create .nvmrc file to auto-switch versions
+echo "18.20.8" > .nvmrc
+
+# Now when you cd into main/, nvm will auto-switch (if configured)
+```
+
+**Why Node 18?**
+- ✅ Vite 4.0 requires Node 16+ (ESM support)
+- ✅ Node 12 is too old (causes `ERR_REQUIRE_ESM` error)
+- ✅ Node 18 is LTS (Long Term Support)
+- ✅ Better performance and compatibility
+
+### 4. Flutter SDK
 
 ```bash
 # macOS (using Homebrew)
@@ -97,7 +157,7 @@ flutter doctor
 # ✓ Android Studio
 ```
 
-### 4. ngrok (API Tunneling)
+### 5. ngrok (API Tunneling)
 
 ```bash
 # macOS (using Homebrew)
@@ -115,7 +175,7 @@ ngrok config add-authtoken YOUR_AUTH_TOKEN
 ngrok version
 ```
 
-### 5. Android Emulator Setup
+### 6. Android Emulator Setup
 
 1. Open **Android Studio**
 2. Go to **Tools → Device Manager**
@@ -269,24 +329,80 @@ php artisan migrate
 # If you need to reset:
 php artisan migrate:fresh
 
-# With seeders (if available):
+# With seeders (recommended for development):
 php artisan migrate:fresh --seed
 ```
 
-### Step 7: Generate Storage Link
+### Step 7: Seed Test Users & Data
+
+The database seeders create test accounts for all user roles:
+
+```bash
+# Run migrations and seeders together
+php artisan migrate:fresh --seed
+```
+
+**Test User Accounts Created:**
+
+| Role | Email | Username | Password | Purpose |
+|------|-------|----------|----------|---------|
+| **Super Admin** | super-admin@renturo.test | (auto-generated) | `password` | Central admin access |
+| **Admin** | admin@main.renturo.test | beastadmin1234 | `password` | Tenant admin |
+| **Owner** | owner@main.renturo.test | beastowner1234 | `password` | Property owner (Client app) |
+| **User** | user@main.renturo.test | beastuser1234 | `password` | Renter (User app) |
+| **Partner** | ads-partner@main.renturo.test | beastpartner1234 | `password` | Ads partner |
+
+**What Gets Seeded:**
+
+1. **Central Database:**
+   - Super Admin user
+   - Laravel Passport personal access client
+   - Test tenant company
+
+2. **Tenant Database:**
+   - Admin, Owner, User, and Partner accounts
+   - Mobile verification records (pre-verified)
+   - Tenant-specific Passport client
+   - Form systems, categories, and dynamic forms
+   - Basketball arena form templates
+
+**Testing Login:**
+
+```bash
+# For Client App (Owner):
+Email: owner@main.renturo.test
+Password: password
+
+# For User App (Renter):
+Email: user@main.renturo.test
+Password: password
+
+# For Admin Dashboard (Web):
+Email: admin@main.renturo.test
+Password: password
+```
+
+**Seeder Files:**
+- `database/seeders/DatabaseSeeder.php` - Main seeder
+- `database/seeders/TenantSeeder.php` - Creates tenant and users
+- `database/seeders/TenantCategorySeeder.php` - Property categories
+- `database/seeders/TenantFormSystemSeeder.php` - Form systems
+- `database/seeders/TenantDynamicFormSeeder.php` - Dynamic forms
+
+### Step 8: Generate Storage Link
 
 ```bash
 php artisan storage:link
 ```
 
-### Step 8: Set Permissions (macOS/Linux)
+### Step 9: Set Permissions (macOS/Linux)
 
 ```bash
 chmod -R 775 storage
 chmod -R 775 bootstrap/cache
 ```
 
-### Step 9: Verify Backend is Running
+### Step 10: Verify Backend is Running
 
 **Option A: Using Valet**
 ```bash

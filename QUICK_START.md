@@ -31,13 +31,20 @@ php artisan serve
 
 ### 2️⃣ Start Frontend (React + Vite)
 ```bash
-# Terminal 1: Start Vite dev server
+# Terminal 1: Switch to Node 18 & Start Vite
 cd /Applications/XAMPP/xamppfiles/htdocs/renturo/main
+
+# ⚠️ IMPORTANT: Use Node 18 (required for Vite)
+nvm use 18.20.8
+
+# Start Vite dev server
 npm run dev
 
 # ✅ Opens at http://localhost:5173
 # ✅ Hot reload enabled for React changes
 ```
+
+**💡 Tip:** If you get `ERR_REQUIRE_ESM` error, you're using Node 12. Run `nvm use 18.20.8` first!
 
 ### 3️⃣ Start ngrok (for mobile apps)
 ```bash
@@ -127,6 +134,32 @@ Press 'q'
 
 # Open DevTools
 Press 'd'
+```
+
+---
+
+## 👤 Test User Accounts
+
+Use these pre-seeded accounts for testing:
+
+```bash
+# Client App (Owner) - For property owners
+Email: owner@main.renturo.test
+Password: password
+
+# User App (Renter) - For renters
+Email: user@main.renturo.test
+Password: password
+
+# Admin Dashboard (Web) - For administrators
+Email: admin@main.renturo.test
+Password: password
+```
+
+**Need to seed database?**
+```bash
+cd /Applications/XAMPP/xamppfiles/htdocs/renturo/main
+php artisan migrate:fresh --seed
 ```
 
 ---
