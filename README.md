@@ -6,15 +6,18 @@
 
 ## 📱 Applications
 
-### 1. Admin Web Application (Full-Stack)
+### 1. Admin Web Application (Full-Stack) - Multi-Tenant
 - **Location:** `/main`
 - **Purpose:** Web-based admin dashboard for property management
-- **Backend:** Laravel 9.19 (PHP 8.3), MySQL
+- **Backend:** Laravel 9.19 (PHP 8.3), MySQL (Multi-tenant)
 - **Frontend:** React 18 + Inertia.js, TypeScript, Tailwind CSS
 - **Build Tool:** Vite
+- **Architecture:** Multi-tenant (Central + Tenant databases)
 - **Access:** 
-  - Local: `http://renturo.test` (Valet) or `http://localhost/renturo/main/public` (XAMPP)
-  - API: `/api/v1/*` endpoints
+  - **Central Admin:** `http://renturo.test/login` (Super Admin)
+  - **Tenant Admin:** `http://main.renturo.test/login` (Admin/Owner/User)
+  - **API (Central):** `http://renturo.test/api/v1/*`
+  - **API (Tenant):** `http://main.renturo.test/api/v1/*`
 
 ### 2. Client App (Flutter - Property Owners)
 - **Location:** `/client`

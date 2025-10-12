@@ -422,6 +422,66 @@ curl http://localhost/renturo/main/public
 # http://localhost/renturo/main/public
 ```
 
+### Step 11: Understanding Multi-Tenant Architecture
+
+**⚠️ IMPORTANT:** Renturo uses a **multi-tenant architecture** with two types of domains:
+
+#### Central Domain (Super Admin)
+```bash
+# Central domain for system administration
+URL: http://renturo.test
+Login: http://renturo.test/login
+
+# Test Account
+Email: super-admin@renturo.test
+Password: password
+Role: Super Admin (manages all tenants)
+```
+
+#### Tenant Domain (Tenant-Specific Users)
+```bash
+# Tenant-specific domain (created during seeding)
+URL: http://main.renturo.test
+Login: http://main.renturo.test/login
+
+# Test Accounts
+Admin:   admin@main.renturo.test   / password
+Owner:   owner@main.renturo.test   / password (Client App)
+User:    user@main.renturo.test    / password (User App)
+Partner: ads-partner@main.renturo.test / password
+```
+
+**How It Works:**
+1. **Central Database** (`renturo`)
+   - Stores: Tenants, Super Admins, Global Settings
+   - Domain: `renturo.test`
+
+2. **Tenant Database** (e.g., `tenant_abc123`)
+   - Stores: Users, Properties, Bookings (per tenant)
+   - Domain: `<tenant-id>.renturo.test` (e.g., `main.renturo.test`)
+
+**Verify Both Domains:**
+```bash
+# Central domain
+curl http://renturo.test/login
+
+# Tenant domain
+curl http://main.renturo.test/login
+
+# Both should return 200 OK (or show login page)
+```
+
+**Configure Valet for Both Domains:**
+```bash
+# If main.renturo.test doesn't work:
+cd /Applications/XAMPP/xamppfiles/htdocs/renturo/main
+valet link renturo
+
+# Valet automatically creates:
+# - renturo.test (central)
+# - *.renturo.test (all subdomains including main.renturo.test)
+```
+
 ---
 
 ## 🎨 Frontend Setup (React + Inertia.js)
@@ -858,9 +918,11 @@ Here's what you should have running:
 
 | Application | URL | Purpose |
 |-------------|-----|---------|
-| **Admin Dashboard** | http://renturo.test | React web interface for admins |
-| **Vite Dev Server** | http://localhost:5173 | Hot reload React development |
-| **API Endpoints** | http://renturo.test/api/v1/* | Backend REST API |
+| **Central Admin** | http://renturo.test/login | Super Admin login (central) |
+| **Tenant Admin** | http://main.renturo.test/login | Tenant login (admin/owner/user) |
+| **Vite Dev Server** | http://localhost:5173 (or 5174) | Hot reload React development |
+| **API Endpoints (Central)** | http://renturo.test/api/v1/* | Central backend API |
+| **API Endpoints (Tenant)** | http://main.renturo.test/api/v1/* | Tenant backend API |
 | **Mobile Access** | https://[your-url].ngrok.app | Flutter apps via ngrok tunnel |
 | **MySQL** | localhost:3306 | Database |
 

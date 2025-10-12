@@ -70,11 +70,15 @@ flutter run -d emulator-5554 -t lib/main_dev.dart
 
 ## 🌐 Access URLs
 
+**Multi-Tenant Architecture:**
+
 | Application | URL | Purpose |
 |-------------|-----|---------|
-| **Admin Dashboard** | http://renturo.test | React web interface |
-| **Vite Dev** | http://localhost:5173 | Hot reload (auto-proxies to backend) |
-| **API** | http://renturo.test/api/v1/* | Backend endpoints |
+| **Central Login** | http://renturo.test/login | Super Admin access |
+| **Tenant Login** | http://main.renturo.test/login | Admin/Owner/User access |
+| **Vite Dev** | http://localhost:5173 (or 5174) | Hot reload (auto-proxies to backend) |
+| **API (Central)** | http://renturo.test/api/v1/* | Central backend endpoints |
+| **API (Tenant)** | http://main.renturo.test/api/v1/* | Tenant backend endpoints |
 | **Mobile (ngrok)** | https://[your-url].ngrok.app | Flutter apps access |
 
 ---
@@ -143,18 +147,21 @@ Press 'd'
 Use these pre-seeded accounts for testing:
 
 ```bash
-# Client App (Owner) - For property owners
-Email: owner@main.renturo.test
+# 🔐 CENTRAL LOGIN (http://renturo.test/login)
+Email: super-admin@renturo.test
 Password: password
+Role: Super Admin (manages all tenants)
 
-# User App (Renter) - For renters
-Email: user@main.renturo.test
-Password: password
-
-# Admin Dashboard (Web) - For administrators
-Email: admin@main.renturo.test
-Password: password
+# 🏢 TENANT LOGIN (http://main.renturo.test/login)
+Admin:   admin@main.renturo.test   / password (Web dashboard)
+Owner:   owner@main.renturo.test   / password (Client App)
+User:    user@main.renturo.test    / password (User App)
+Partner: ads-partner@main.renturo.test / password (Ads)
 ```
+
+**💡 Important:** 
+- Super Admin uses **renturo.test**
+- All other users use **main.renturo.test**
 
 **Need to seed database?**
 ```bash
