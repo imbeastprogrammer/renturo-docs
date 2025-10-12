@@ -72,14 +72,16 @@ flutter run -d emulator-5554 -t lib/main_dev.dart
 
 **Multi-Tenant Architecture:**
 
-| Application | URL | Purpose |
-|-------------|-----|---------|
-| **Central Login** | http://renturo.test/login | Super Admin access |
-| **Tenant Login** | http://main.renturo.test/login | Admin/Owner/User access |
-| **Vite Dev** | http://localhost:5173 (or 5174) | Hot reload (auto-proxies to backend) |
-| **API (Central)** | http://renturo.test/api/v1/* | Central backend endpoints |
-| **API (Tenant)** | http://main.renturo.test/api/v1/* | Tenant backend endpoints |
-| **Mobile (ngrok)** | https://[your-url].ngrok.app | Flutter apps access |
+| Application | URL | Purpose | User |
+|-------------|-----|---------|------|
+| **Central Web** | http://renturo.test/login | Manage tenants | Super Admin |
+| **Admin Web** | http://main.renturo.test/login | Create listings | Admin (Web only) |
+| **Vite Dev** | http://localhost:5173 (or 5174) | Hot reload | Development |
+| **API (Central)** | http://renturo.test/api/v1/* | Central API | Super Admin |
+| **API (Tenant)** | http://main.renturo.test/api/v1/* | Tenant API | Admin/Owner/User |
+| **Mobile (ngrok)** | https://[your-url].ngrok.app | Mobile API | Owner/User (Flutter) |
+
+**Note:** Owner and User roles use **mobile apps only**, not the web interface.
 
 ---
 
@@ -150,18 +152,37 @@ Use these pre-seeded accounts for testing:
 # 🔐 CENTRAL LOGIN (http://renturo.test/login)
 Email: super-admin@renturo.test
 Password: password
-Role: Super Admin (manages all tenants)
+Role: Super Admin
+Platform: Web (Central)
+Purpose: Manages all tenants
 
-# 🏢 TENANT LOGIN (http://main.renturo.test/login)
-Admin:   admin@main.renturo.test   / password (Web dashboard)
-Owner:   owner@main.renturo.test   / password (Client App)
-User:    user@main.renturo.test    / password (User App)
-Partner: ads-partner@main.renturo.test / password (Ads)
+# 🏢 ADMIN LOGIN (http://main.renturo.test/login)
+Email: admin@main.renturo.test
+Password: password
+Role: Admin
+Platform: Web (Tenant)
+Purpose: Creates and manages listing properties
+
+# 📱 CLIENT APP (Flutter - Property Owners)
+Email: owner@main.renturo.test
+Password: password
+Role: Owner
+Platform: Mobile (Client App)
+Purpose: Saves property listings
+
+# 📱 USER APP (Flutter - Renters)
+Email: user@main.renturo.test
+Password: password
+Role: User
+Platform: Mobile (User App)
+Purpose: Browses and rents properties
 ```
 
 **💡 Important:** 
-- Super Admin uses **renturo.test**
-- All other users use **main.renturo.test**
+- **Super Admin** → Web: `http://renturo.test/login`
+- **Admin** → Web: `http://main.renturo.test/login` (creates listings)
+- **Owner** → Mobile Client App (saves listings)
+- **User** → Mobile User App (rents properties)
 
 **Need to seed database?**
 ```bash

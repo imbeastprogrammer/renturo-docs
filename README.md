@@ -13,23 +13,31 @@
 - **Frontend:** React 18 + Inertia.js, TypeScript, Tailwind CSS
 - **Build Tool:** Vite
 - **Architecture:** Multi-tenant (Central + Tenant databases)
+- **Users:** Super Admin (central), Admin (tenant)
 - **Access:** 
-  - **Central Admin:** `http://renturo.test/login` (Super Admin)
-  - **Tenant Admin:** `http://main.renturo.test/login` (Admin/Owner/User)
+  - **Central Login:** `http://renturo.test/login` (Super Admin - manages tenants)
+  - **Tenant Login:** `http://main.renturo.test/login` (Admin - creates listings)
   - **API (Central):** `http://renturo.test/api/v1/*`
   - **API (Tenant):** `http://main.renturo.test/api/v1/*`
+- **Note:** Owner and User roles use mobile apps only
 
 ### 2. Client App (Flutter - Property Owners)
 - **Location:** `/client`
-- **Purpose:** Mobile app for property owners to manage listings
+- **Purpose:** Mobile app for property owners to save listings
+- **User Role:** Owner
+- **Actions:** Save property listings (created by Admin via web)
 - **Stack:** Flutter 3.7+, Dart 3.7+, BLoC pattern
 - **Platform:** Android, iOS
+- **Login:** `owner@main.renturo.test` / `password`
 
 ### 3. User App (Flutter - Renters)
 - **Location:** `/user`
-- **Purpose:** Mobile app for renters to browse and book properties
+- **Purpose:** Mobile app for renters to browse and rent properties
+- **User Role:** User
+- **Actions:** Browse listings, rent properties, manage bookings
 - **Stack:** Flutter 3.7+, Dart 3.7+, BLoC pattern
 - **Platform:** Android, iOS
+- **Login:** `user@main.renturo.test` / `password`
 
 ---
 

@@ -344,13 +344,13 @@ php artisan migrate:fresh --seed
 
 **Test User Accounts Created:**
 
-| Role | Email | Username | Password | Purpose |
-|------|-------|----------|----------|---------|
-| **Super Admin** | super-admin@renturo.test | (auto-generated) | `password` | Central admin access |
-| **Admin** | admin@main.renturo.test | beastadmin1234 | `password` | Tenant admin |
-| **Owner** | owner@main.renturo.test | beastowner1234 | `password` | Property owner (Client app) |
-| **User** | user@main.renturo.test | beastuser1234 | `password` | Renter (User app) |
-| **Partner** | ads-partner@main.renturo.test | beastpartner1234 | `password` | Ads partner |
+| Role | Email | Username | Password | Platform | Purpose |
+|------|-------|----------|----------|----------|---------|
+| **Super Admin** | super-admin@renturo.test | (auto) | `password` | Web (central) | Manages all tenants |
+| **Admin** | admin@main.renturo.test | beastadmin1234 | `password` | Web (tenant) | Creates & manages listings |
+| **Owner** | owner@main.renturo.test | beastowner1234 | `password` | Client App | Saves property listings |
+| **User** | user@main.renturo.test | beastuser1234 | `password` | User App | Rents properties |
+| **Partner** | ads-partner@main.renturo.test | beastpartner1234 | `password` | Web (tenant) | Manages ads |
 
 **What Gets Seeded:**
 
@@ -369,17 +369,21 @@ php artisan migrate:fresh --seed
 **Testing Login:**
 
 ```bash
-# For Client App (Owner):
-Email: owner@main.renturo.test
-Password: password
+# Web (Central) - http://renturo.test/login
+Super Admin: super-admin@renturo.test / password
+Purpose: Manage all tenants
 
-# For User App (Renter):
-Email: user@main.renturo.test
-Password: password
+# Web (Tenant) - http://main.renturo.test/login
+Admin: admin@main.renturo.test / password
+Purpose: Create and manage listing properties
 
-# For Admin Dashboard (Web):
-Email: admin@main.renturo.test
-Password: password
+# Client App (Mobile Flutter) - owner@main.renturo.test
+Owner: owner@main.renturo.test / password
+Purpose: Save property listings
+
+# User App (Mobile Flutter) - user@main.renturo.test
+User: user@main.renturo.test / password
+Purpose: Browse and rent properties
 ```
 
 **Seeder Files:**
@@ -445,11 +449,17 @@ URL: http://main.renturo.test
 Login: http://main.renturo.test/login
 
 # Test Accounts
-Admin:   admin@main.renturo.test   / password
-Owner:   owner@main.renturo.test   / password (Client App)
-User:    user@main.renturo.test    / password (User App)
-Partner: ads-partner@main.renturo.test / password
+Admin:   admin@main.renturo.test   / password (Web - Creates listings)
+Owner:   owner@main.renturo.test   / password (Client App - Saves listings)
+User:    user@main.renturo.test    / password (User App - Rents properties)
+Partner: ads-partner@main.renturo.test / password (Ads)
 ```
+
+**User Role Breakdown:**
+- **Admin (Web)**: Accesses `main.renturo.test` to create and manage listing properties
+- **Owner (Mobile)**: Uses Client App to save property listings
+- **User (Mobile)**: Uses User App to browse and rent properties
+- **Partner**: Manages advertisements
 
 **How It Works:**
 1. **Central Database** (`renturo`)
@@ -916,15 +926,21 @@ Here's what you should have running:
 
 ### 🌐 Access Points Summary
 
-| Application | URL | Purpose |
-|-------------|-----|---------|
-| **Central Admin** | http://renturo.test/login | Super Admin login (central) |
-| **Tenant Admin** | http://main.renturo.test/login | Tenant login (admin/owner/user) |
-| **Vite Dev Server** | http://localhost:5173 (or 5174) | Hot reload React development |
-| **API Endpoints (Central)** | http://renturo.test/api/v1/* | Central backend API |
-| **API Endpoints (Tenant)** | http://main.renturo.test/api/v1/* | Tenant backend API |
-| **Mobile Access** | https://[your-url].ngrok.app | Flutter apps via ngrok tunnel |
-| **MySQL** | localhost:3306 | Database |
+| Application | URL | Purpose | User Role |
+|-------------|-----|---------|-----------|
+| **Central Web** | http://renturo.test/login | Manage tenants | Super Admin |
+| **Admin Web** | http://main.renturo.test/login | Create listings | Admin (Web only) |
+| **Vite Dev Server** | http://localhost:5173 (or 5174) | Hot reload development | Dev |
+| **API (Central)** | http://renturo.test/api/v1/* | Central backend API | Super Admin |
+| **API (Tenant)** | http://main.renturo.test/api/v1/* | Tenant backend API | All tenant users |
+| **Mobile (ngrok)** | https://[your-url].ngrok.app | Mobile API access | Owner/User (Flutter) |
+| **MySQL** | localhost:3306 | Database | Backend |
+
+**Platform Usage:**
+- **Web (Central):** Super Admin only
+- **Web (Tenant):** Admin only (creates listings)
+- **Mobile Client App:** Owner (saves listings)
+- **Mobile User App:** User (rents properties)
 
 ---
 
