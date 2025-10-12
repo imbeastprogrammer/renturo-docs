@@ -492,6 +492,164 @@ valet link renturo
 # - *.renturo.test (all subdomains including main.renturo.test)
 ```
 
+### Step 12: Understanding Authentication System
+
+**⚠️ IMPORTANT:** Renturo uses **Laravel Passport** for API authentication.
+
+#### Authentication Methods
+
+| Platform | Method | Package | Used By |
+|----------|--------|---------|---------|
+| **Web (Central)** | Session Cookies | Laravel (built-in) | Super Admin |
+| **Web (Tenant)** | Session Cookies | Laravel (built-in) | Admin |
+| **Mobile Apps** | **OAuth2 Tokens** | **Laravel Passport** | Owner, User |
+
+#### Laravel Passport (OAuth2 Server)
+
+**What is it?**
+- Full OAuth2 server implementation
+- Personal Access Tokens for mobile apps
+- Token refresh mechanism
+- Scopes/Permissions support
+- Multi-tenant OAuth clients
+
+**Why Passport?**
+1. ✅ **Token Refresh** - Mobile apps can refresh tokens without re-login
+2. ✅ **Scopes** - Different permissions for Owner vs User
+3. ✅ **OAuth2 Standard** - Industry standard for API authentication
+4. ✅ **Multi-tenant Support** - Each tenant has its own Passport client
+
+**Passport Tables:**
+```sql
+oauth_access_tokens              -- Active access tokens
+oauth_auth_codes                 -- Authorization codes
+oauth_clients                    -- OAuth2 clients (per tenant)
+oauth_personal_access_clients    -- Personal access client config
+oauth_refresh_tokens             -- Refresh tokens for token renewal
+```
+
+**Authentication Guards:**
+```php
+// config/auth.php
+'guards' => [
+    'web' => [
+        'driver' => 'session',    // Web (Tenant) - Admin
+        'provider' => 'users',
+    ],
+    'central' => [
+        'driver' => 'session',    // Web (Central) - Super Admin
+        'provider' => 'centrals',
+    ],
+    'api' => [
+        'driver' => 'passport',   // Mobile Apps - Owner/User
+        'provider' => 'users',
+    ],
+],
+```
+
+#### Mobile App Authentication Flow
+
+**1. Login (Flutter App → Backend)**
+```bash
+POST /api/v1/login
+Body: { "email": "owner@main.renturo.test", "password": "password" }
+
+Response:
+{
+  "message": "success",
+  "body": {
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+    "user": { "id": 1, "email": "owner@main.renturo.test", "role": "OWNER" }
+  }
+}
+```
+
+**2. Store Token (Flutter App)**
+```dart
+// Store in FlutterSecureStorage
+await secureStorage.write(key: 'access_token', value: accessToken);
+await secureStorage.write(key: 'user_details', value: jsonEncode(user));
+```
+
+**3. Authenticated Requests**
+```bash
+GET /api/v1/listings
+Headers: {
+  "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "Accept": "application/json"
+}
+```
+
+**4. Token Refresh (Optional)**
+```bash
+POST /api/v1/token/refresh
+Body: { "refresh_token": "..." }
+```
+
+#### Passport Client Setup (Seeded Automatically)
+
+**Central Passport Client:**
+```php
+// database/seeders/DatabaseSeeder.php
+Artisan::call('passport:client', [
+    '--personal' => true,
+    '--name' => 'Renturo Personal Access Client'
+]);
+```
+
+**Tenant Passport Client:**
+```php
+// database/seeders/TenantSeeder.php (runs per tenant)
+$tenant->run(function () use ($tenant) {
+    Artisan::call("tenants:run passport:client 
+        --option='personal=personal' 
+        --option='name={$tenant->id}' 
+        --tenants={$tenant->id}"
+    );
+});
+```
+
+#### Verify Passport Installation
+
+```bash
+cd /Applications/XAMPP/xamppfiles/htdocs/renturo/main
+
+# Check Passport is installed
+composer show laravel/passport
+
+# Check OAuth tables exist
+php artisan tinker
+>>> \DB::table('oauth_clients')->count();
+
+# List Passport routes
+php artisan route:list | grep oauth
+```
+
+**Expected Passport Routes:**
+- `POST /oauth/token` - Issue tokens
+- `GET /oauth/tokens` - List user tokens
+- `DELETE /oauth/tokens/{token_id}` - Revoke token
+- `POST /oauth/personal-access-tokens` - Create personal token
+- `DELETE /oauth/personal-access-tokens/{token_id}` - Delete personal token
+
+#### Security Best Practices
+
+1. **Token Storage:**
+   - ✅ Flutter: Use `FlutterSecureStorage` (encrypted)
+   - ❌ Never store tokens in SharedPreferences or plain storage
+
+2. **Token Expiration:**
+   - Access tokens expire (configurable in `config/passport.php`)
+   - Use refresh tokens to get new access tokens
+
+3. **HTTPS Required:**
+   - ✅ Production: Always use HTTPS
+   - ✅ Development: ngrok provides HTTPS tunnel
+
+4. **Token Revocation:**
+   - Logout should revoke tokens on server
+   - User can view/revoke active tokens
+
 ---
 
 ## 🎨 Frontend Setup (React + Inertia.js)

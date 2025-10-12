@@ -131,7 +131,10 @@ renturo/
 - **Database:** MySQL 8.0
 - **Server:** Laravel Valet / XAMPP (Apache)
 - **API:** RESTful JSON API
-- **Authentication:** Laravel Sanctum
+- **Authentication:** 
+  - **Web:** Session-based (built-in Laravel)
+  - **Mobile API:** **Laravel Passport** (OAuth2)
+- **Multi-Tenancy:** Stancl/Tenancy
 - **PHP:** 8.3
 
 **Frontend:**
