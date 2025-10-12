@@ -4,33 +4,71 @@
 
 ---
 
-## ⚡ Quick Start (3 Steps)
+## ⚡ Quick Start - All Applications
 
-### 1️⃣ Start XAMPP
+### 1️⃣ Start Backend (Laravel)
+
+**Option A: Using Valet** ⭐ Recommended
+```bash
+# Already running! Just access:
+# http://renturo.test
+```
+
+**Option B: Using XAMPP**
 ```bash
 # Open XAMPP Control Panel
 # ✅ Start Apache
 # ✅ Start MySQL
+# Access: http://localhost/renturo/main/public
 ```
 
-### 2️⃣ Start ngrok
+**Option C: Using Artisan**
 ```bash
+cd /Applications/XAMPP/xamppfiles/htdocs/renturo/main
+php artisan serve
+# Access: http://127.0.0.1:8000
+```
+
+### 2️⃣ Start Frontend (React + Vite)
+```bash
+# Terminal 1: Start Vite dev server
+cd /Applications/XAMPP/xamppfiles/htdocs/renturo/main
+npm run dev
+
+# ✅ Opens at http://localhost:5173
+# ✅ Hot reload enabled for React changes
+```
+
+### 3️⃣ Start ngrok (for mobile apps)
+```bash
+# Terminal 2: Start ngrok
 cd /Applications/XAMPP/xamppfiles/htdocs/renturo/main
 ngrok http 80 --host-header=localhost
 
 # Copy the https URL (e.g., https://abc123.ngrok-free.app)
 ```
 
-### 3️⃣ Run Flutter App
+### 4️⃣ Run Flutter Apps
 ```bash
-# For Client App (Owner)
+# Terminal 3: Client App (Owner)
 cd /Applications/XAMPP/xamppfiles/htdocs/renturo/client
 flutter run -d emulator-5554 -t lib/main_dev.dart
 
-# OR For User App (Renter)
+# Terminal 4: User App (Renter) - Optional
 cd /Applications/XAMPP/xamppfiles/htdocs/renturo/user
 flutter run -d emulator-5554 -t lib/main_dev.dart
 ```
+
+---
+
+## 🌐 Access URLs
+
+| Application | URL | Purpose |
+|-------------|-----|---------|
+| **Admin Dashboard** | http://renturo.test | React web interface |
+| **Vite Dev** | http://localhost:5173 | Hot reload (auto-proxies to backend) |
+| **API** | http://renturo.test/api/v1/* | Backend endpoints |
+| **Mobile (ngrok)** | https://[your-url].ngrok.app | Flutter apps access |
 
 ---
 
@@ -48,7 +86,31 @@ flutter run -d emulator-5554 -t lib/main_dev.dart
 
 ---
 
+## 💻 React/Vite Commands
+
+While `npm run dev` is running:
+
+```bash
+# Automatic hot reload
+# ✅ Edit any file in resources/js/*
+# ✅ Changes appear instantly in browser
+# ✅ No manual refresh needed!
+
+# Stop Vite server
+Press Ctrl + C
+
+# Restart Vite server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+---
+
 ## 📱 Flutter Commands
+
+While `flutter run` is running:
 
 ```bash
 # Hot reload (quick changes)

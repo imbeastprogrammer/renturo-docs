@@ -6,20 +6,27 @@
 
 ## 📱 Applications
 
-### 1. Backend API (Laravel)
+### 1. Admin Web Application (Full-Stack)
 - **Location:** `/main`
-- **Purpose:** RESTful API for all client applications
-- **Stack:** Laravel 10, MySQL, PHP 8.1+
+- **Purpose:** Web-based admin dashboard for property management
+- **Backend:** Laravel 9.19 (PHP 8.3), MySQL
+- **Frontend:** React 18 + Inertia.js, TypeScript, Tailwind CSS
+- **Build Tool:** Vite
+- **Access:** 
+  - Local: `http://renturo.test` (Valet) or `http://localhost/renturo/main/public` (XAMPP)
+  - API: `/api/v1/*` endpoints
 
 ### 2. Client App (Flutter - Property Owners)
 - **Location:** `/client`
 - **Purpose:** Mobile app for property owners to manage listings
 - **Stack:** Flutter 3.7+, Dart 3.7+, BLoC pattern
+- **Platform:** Android, iOS
 
 ### 3. User App (Flutter - Renters)
 - **Location:** `/user`
 - **Purpose:** Mobile app for renters to browse and book properties
 - **Stack:** Flutter 3.7+, Dart 3.7+, BLoC pattern
+- **Platform:** Android, iOS
 
 ---
 
@@ -46,12 +53,17 @@ Choose the right guide for your needs:
 ## ⚡ Quick Start
 
 ```bash
-# 1. Start XAMPP (Apache + MySQL)
+# 1. Start Backend (Laravel via Valet or XAMPP)
+# Valet: Already running at http://renturo.test
+# OR XAMPP: Start Apache + MySQL in XAMPP Control Panel
 
-# 2. Start ngrok
-cd main && ngrok http 80 --host-header=localhost
+# 2. Start Frontend Dev Server (React + Vite)
+cd main && npm run dev
 
-# 3. Run Client App
+# 3. Start ngrok (for mobile apps)
+ngrok http 80 --host-header=localhost
+
+# 4. Run Client App
 cd client && flutter run -d emulator-5554 -t lib/main_dev.dart
 
 # OR Run User App
@@ -102,26 +114,40 @@ renturo/
 
 ## 🛠️ Tech Stack
 
-### Backend
-- **Framework:** Laravel 10
+### Admin Web Application (main/)
+**Backend:**
+- **Framework:** Laravel 9.19
 - **Database:** MySQL 8.0
-- **Server:** XAMPP (Apache)
+- **Server:** Laravel Valet / XAMPP (Apache)
 - **API:** RESTful JSON API
 - **Authentication:** Laravel Sanctum
+- **PHP:** 8.3
 
-### Mobile Apps
+**Frontend:**
+- **Framework:** React 18.2
+- **Routing:** Inertia.js 1.0
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS 3.2
+- **Build Tool:** Vite 4.0
+- **UI Components:** Headless UI
+- **State:** React Hooks
+
+### Mobile Apps (client/ & user/)
 - **Framework:** Flutter 3.7+
 - **Language:** Dart 3.7+
 - **State Management:** BLoC Pattern
 - **HTTP Client:** http package
 - **Secure Storage:** flutter_secure_storage
 - **UI Components:** Material Design 3
+- **Platform:** Android, iOS
 
 ### Development Tools
-- **Version Control:** Git
+- **Version Control:** Git, GitHub
 - **API Tunneling:** ngrok
-- **IDE:** VS Code, Android Studio
+- **Package Managers:** Composer (PHP), npm (Node.js), pub (Flutter)
+- **IDE:** VS Code, Android Studio, PHPStorm
 - **Emulator:** Android Emulator
+- **Hot Reload:** Vite HMR, Flutter Hot Reload
 
 ---
 
@@ -171,31 +197,41 @@ renturo/
 
 ## 📦 Installation
 
-### 1. Clone Repository
+### 1. Clone Repositories
 ```bash
-git clone <repository-url>
-cd renturo
-```
-
-### 2. Backend Setup
-```bash
+# Backend & Web App
+git clone https://github.com/imbeastprogrammer/renturo-main.git main
 cd main
 composer install
+npm install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
-```
 
-### 3. Client App Setup
-```bash
+# Client App (Owner)
+git clone https://github.com/imbeastprogrammer/renturo-client.git client
 cd client
 flutter pub get
-```
 
-### 4. User App Setup
-```bash
+# User App (Renter)
+git clone https://github.com/imbeastprogrammer/renturo-user.git user
 cd user
 flutter pub get
+```
+
+### 2. Quick Setup (if already cloned)
+```bash
+# Backend
+cd main
+composer install
+npm install
+
+# Frontend dependencies
+cd main && npm install
+
+# Flutter apps
+cd client && flutter pub get
+cd user && flutter pub get
 ```
 
 **Detailed setup:** [DEVELOPMENT_SETUP.md](./DEVELOPMENT_SETUP.md)
@@ -204,26 +240,39 @@ flutter pub get
 
 ## 🚀 Running the Applications
 
-### Start Backend + ngrok
-```bash
-# Terminal 1: Start XAMPP (GUI)
+### Complete Startup (All 4 Applications)
 
-# Terminal 2: Start ngrok
-cd main
+```bash
+# Terminal 1: Backend (Laravel)
+# Option A: Valet (already running)
+http://renturo.test
+# Option B: XAMPP (start Apache + MySQL)
+# Option C: Artisan
+cd main && php artisan serve
+
+# Terminal 2: Frontend (React + Vite)
+cd main && npm run dev
+# Runs at http://localhost:5173 with hot reload
+
+# Terminal 3: ngrok (for mobile apps)
 ngrok http 80 --host-header=localhost
+# Copy the https:// URL for mobile apps
+
+# Terminal 4: Client App (Owner)
+cd client && flutter run -d emulator-5554 -t lib/main_dev.dart
+
+# Terminal 5: User App (Renter)
+cd user && flutter run -d emulator-5554 -t lib/main_dev.dart
 ```
 
-### Run Client App
-```bash
-cd client
-flutter run -d emulator-5554 -t lib/main_dev.dart
-```
+### Access Points
 
-### Run User App
-```bash
-cd user
-flutter run -d emulator-5554 -t lib/main_dev.dart
-```
+| Application | URL | Purpose |
+|-------------|-----|---------|
+| **Admin Dashboard** | http://renturo.test | Web interface (React + Inertia) |
+| **Vite Dev Server** | http://localhost:5173 | Hot reload for React dev |
+| **API Endpoints** | http://renturo.test/api/v1/* | Backend API |
+| **Mobile Access** | https://[ngrok-url] | Flutter apps via ngrok |
 
 ---
 
