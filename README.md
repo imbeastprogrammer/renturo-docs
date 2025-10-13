@@ -50,12 +50,15 @@ Choose the right guide for your needs:
 |----------|---------|-------------|
 | **[QUICK_START.md](./QUICK_START.md)** | Daily startup commands | Every development session |
 | **[DEVELOPMENT_SETUP.md](./DEVELOPMENT_SETUP.md)** | Complete setup guide | First-time setup & troubleshooting |
+| **[ROUTES_ARCHITECTURE.md](./ROUTES_ARCHITECTURE.md)** | Routes structure & organization | Understanding routing, adding routes |
 | **[DEV_CHECKLIST.md](./DEV_CHECKLIST.md)** | Development checklist | Before committing & deploying |
 
 ### 📖 Quick Links
 
 - **New Developer?** → Start with [DEVELOPMENT_SETUP.md](./DEVELOPMENT_SETUP.md)
 - **Need Quick Start?** → Use [QUICK_START.md](./QUICK_START.md)
+- **Understanding Routes?** → See [ROUTES_ARCHITECTURE.md](./ROUTES_ARCHITECTURE.md)
+- **API Endpoints?** → Access Swagger at `http://main.renturo.test/api/documentation`
 - **Daily Development?** → Check [DEV_CHECKLIST.md](./DEV_CHECKLIST.md)
 - **Troubleshooting?** → See [DEVELOPMENT_SETUP.md#troubleshooting](./DEVELOPMENT_SETUP.md#troubleshooting)
 
